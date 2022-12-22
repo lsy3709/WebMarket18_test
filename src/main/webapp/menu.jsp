@@ -6,7 +6,7 @@
 <nav class="navbar navbar-expand  navbar-dark bg-dark">
 	<div class="container">
 		<div class="navbar-header">
-			<a class="navbar-brand" href="./welcome.jsp">Home</a>
+			<a class="navbar-brand" href="/ch18_WebMarket_2/welcome.jsp">Home</a>
 		</div>
 		<div>
 			<ul class="navbar-nav mr-auto">
