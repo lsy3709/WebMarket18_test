@@ -9,8 +9,10 @@
 		<web-resource-collection>
 			<web-resource-name>WebMarket</web-resource-name>
 			<description></description>
+					
 			<url-pattern>/addProduct.jsp</url-pattern>
 			<url-pattern>/editProduct.jsp</url-pattern>
+			
 		</web-resource-collection>
 		<auth-constraint>
 			<description>권한 관리자명</description>
@@ -30,6 +32,7 @@
 		<location>/exceptionNoPage.jsp</location>
 	</error-page>	
 	
+	<!-- 콘솔 상에 해당 로그를 출력하는 설정. -->
 	<filter>
 		<filter-name>LogFilter</filter-name>
 		<filter-class>filter.LogFilter</filter-class>     
@@ -39,6 +42,7 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>	
 	
+	<!-- 파일 상에 해당 로그를 출력하는 설정. -->
 	<filter>
 		<filter-name>LogFileFilter</filter-name>
 		<filter-class>filter.LogFileFilter</filter-class>

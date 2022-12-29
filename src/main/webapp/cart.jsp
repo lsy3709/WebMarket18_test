@@ -6,6 +6,7 @@
 <head>
 <link rel="stylesheet" href="./resources/css/bootstrap.min.css" />
 <%
+// session.getId(); 웹 브라우저당 하나의 세션 아이디를 부여합니다. 
 	String cartId = session.getId();
 %>
 <title>장바구니</title>

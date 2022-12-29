@@ -12,6 +12,7 @@
 			<h1 class="display-3">상품 목록</h1>
 		</div>
 	</div>
+
 		<%@ include file="dbconn.jsp" %>
 	<div class="container">
 		<div class="row" align="center">
@@ -25,9 +26,9 @@
 				while (rs.next()) {
 			%>
 			<div class="col-md-4">
-				<%-- <img src="./resources/images/<%=rs.getString("p_fileName")%>" style="width: 100%"> --%>
+				<img src="./resources/images/<%=rs.getString("p_fileName")%>" style="width: 100%">
 				<%-- <img src="c:/upload/<%=rs.getString("p_fileName")%>" style="width: 100%"> --%>
-				<img src="C:/JSP_Workspace1/ch18_WebMarket_2/src/main/webapp/resources/images/<%=rs.getString("p_fileName")%>" style="width: 100%">
+			<%-- 	<img src="C:/JSP_Workspace1/ch18_WebMarket_2/src/main/webapp/resources/images/<%=rs.getString("p_fileName")%>" style="width: 100%"> --%>
 				<h3><%=rs.getString("p_name")%></h3>
 				<p><%=rs.getString("p_description")%>
 				<p><%=rs.getString("p_UnitPrice")%>원

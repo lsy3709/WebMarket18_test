@@ -7,6 +7,8 @@
 <title>상품 등록</title>
 </head>
 <body>
+
+
 	<fmt:setLocale value='<%= request.getParameter("language") %>'/>
 	<fmt:bundle basename="bundle.message" >
 	<jsp:include page="menu.jsp" />	
