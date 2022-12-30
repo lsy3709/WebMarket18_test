@@ -13,13 +13,17 @@
 		</div>
 	</div>
 
+<!--  디비에 연결하기 위한 정보를 담아둔 페이지. -->
 		<%@ include file="dbconn.jsp" %>
 	<div class="container">
 		<div class="row" align="center">
 			<%
+			// 동적쿼리, 해당 sql 문장을 전달할 때 이용할 객체
 				PreparedStatement pstmt = null;
+			// 디비에서 조회된 정보들을 담을 객체.
 				ResultSet rs = null;
 				
+			// 해당 상품의 정보를 가져오기 위한 쿼리 문장. 
 				String sql = "select * from product";
 				pstmt = conn.prepareStatement(sql);
 				rs = pstmt.executeQuery();
@@ -36,6 +40,7 @@
 			</div>
 			<%
 				}
+				
 				if (rs != null)
 					rs.close();
 				if (pstmt != null)
