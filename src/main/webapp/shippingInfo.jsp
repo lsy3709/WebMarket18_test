@@ -13,7 +13,9 @@
 	</div>
 	<div class="container">
 		<form action="./processShippingInfo.jsp" class="form-horizontal"method="post">
+			
 			<input type="hidden" name="cartId" value="<%=request.getParameter("cartId")%>">
+			
 			<div class="form-group row">
 				<label class="col-sm-2">성명</label>
 				<div class="col-sm-3">
