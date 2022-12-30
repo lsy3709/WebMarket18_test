@@ -3,6 +3,7 @@
 <%
 	request.setCharacterEncoding("UTF-8");
 
+// 설정.
 // 해당 배송정보들의 값을 받아와서 쿠키로 생성하는 로직. 
 	Cookie cartId = new Cookie("Shipping_cartId", URLEncoder.encode(request.getParameter("cartId"), "utf-8"));
 	Cookie name = new Cookie("Shipping_name", URLEncoder.encode(request.getParameter("name"), "utf-8"));
@@ -18,6 +19,7 @@
 	country.setMaxAge(365 * 24 * 60 * 60);
 	addressName.setMaxAge(365 * 24 * 60 * 60);
 
+	// 반드시 적용.
 	// response 내장객체 해당 쿠키들을 저장해둠. 
 	response.addCookie(cartId);
 	response.addCookie(name);
