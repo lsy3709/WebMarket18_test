@@ -20,19 +20,28 @@ public class BoardDAO {
 			instance = new BoardDAO();
 		return instance;
 	}	
-	//board Å×ÀÌºíÀÇ ·¹ÄÚµå °³¼ö
+	//board ê²Œì‹œíŒì˜ ì´ ê²Œì‹œë¬¼ì˜ ê°¯ìˆ˜ë¥¼ ê°€ì ¸ì˜¤ê¸°.
+	// ë§¤ê°œë³€ìˆ˜ë¡œ items : ê²€ìƒ‰ì¡°ê±´, text : ê²€ìƒ‰ì–´
 	public int getListCount(String items, String text) {
+		// ë””ë¹„ì— ì ‘ê·¼ í•˜ê¸°ìœ„í•œ ê¸°ë³¸ ê°ì²´ë“¤
+		// ë™ì  ì¿¼ë¦¬ ë‹´ì„ ê°ì²´ PreparedStatement
+		// ì¡°íšŒ ê²°ê³¼ë¥¼ ë‹´ì„ ê°ì²´ ResultSet
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 
+		// ìƒíƒœë¥¼ í‘œì‹œ ìœ„í•œ. ê¸°ë³¸ê°’. 
 		int x = 0;
 
+		// ê¸°ë³¸ sql ë¬¸ì¥ í‘œí˜„í•˜ê¸°ìœ„í•œ ë³€ìˆ˜.
 		String sql;
 		
+		// í•´ë‹¹ ê²€ìƒ‰ ì¡°ê±´ì´ ì—†ë‹¤ë©´. 
 		if (items == null && text == null)
+			//count(*) sqlì—ì„œ í•´ë‹¹ í–‰ì˜ ê°¯ìˆ˜ë¥¼ ì„¸ì–´ì¤„ ë•Œ ì‚¬ìš©. 
 			sql = "select  count(*) from board";
 		else
+			// where ì¡°ê±´ì ˆì—ì„œ items ê°€ í•´ë‹¹ ì¡°ê±´, like ì†ì„±ì„ í†µí•´ì„œ í•´ë‹¹ ê²€ìƒ‰ì–´ë¥¼ ë””ë¹„ì—ì„œ ê²€ìƒ‰í•¨. 
 			sql = "SELECT   count(*) FROM board where " + items + " like '%" + text + "%'";
 		
 		try {
@@ -44,7 +53,7 @@ public class BoardDAO {
 				x = rs.getInt(1);
 			
 		} catch (Exception ex) {
-			System.out.println("getListCount() ¿¡·¯: " + ex);
+			System.out.println("getListCount() ï¿½ï¿½ï¿½ï¿½: " + ex);
 		} finally {			
 			try {				
 				if (rs != null) 
@@ -59,14 +68,18 @@ public class BoardDAO {
 		}		
 		return x;
 	}
-	//board Å×ÀÌºíÀÇ ·¹ÄÚµå °¡Á®¿À±â
+	//board ì‹¤ì œì ìœ¼ë¡œ í•´ë‹¹ í˜ì´ì§€ì— í¬ê¸°ë¥¼ 5ê°œì”© ë¶ˆëŸ¬ì˜¤ëŠ” í˜ì´ì§• ì²˜ë¦¬ ì‹¤ì œë¡œì§. 
+	// page : í˜„ì¬ í˜ì´ì§€(ê¸°ë³¸: 1í˜ì´ì§€), limit : ì´ˆê¸°ì— ì„¤ì •í•œ í˜„ì¬ í˜ì´ì§€ì— ë¶ˆëŸ¬ì˜¬ ê°¯ìˆ˜ : 5ê°œ
 	public ArrayList<BoardDTO> getBoardList(int page, int limit, String items, String text) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 
+		// ë””ë¹„ì—ì„œ ë¶ˆëŸ¬ì˜¨ ê²Œì‹œê¸€ ì´ ê°¯ìˆ˜. = ì˜ˆì œ) 11ê°œ
 		int total_record = getListCount(items, text );
+		// start = (1 -1 ) * 5 = 0
 		int start = (page - 1) * limit;
+		// index = 1
 		int index = start + 1;
 
 		String sql;
@@ -76,6 +89,8 @@ public class BoardDAO {
 		else
 			sql = "SELECT  * FROM board where " + items + " like '%" + text + "%' ORDER BY num DESC ";
 
+		
+		// ë””ë¹„ì—ì„œ ë¶ˆëŸ¬ì˜¬ ë‚´ìš©ì„ ë‹´ì„ ì„ì‹œ ì»¬ë ‰ì…˜ ê°ì²´.
 		ArrayList<BoardDTO> list = new ArrayList<BoardDTO>();
 
 		try {
@@ -102,7 +117,7 @@ public class BoardDAO {
 			}
 			return list;
 		} catch (Exception ex) {
-			System.out.println("getBoardList() ¿¡·¯ : " + ex);
+			System.out.println("getBoardList() ï¿½ï¿½ï¿½ï¿½ : " + ex);
 		} finally {
 			try {
 				if (rs != null) 
@@ -117,7 +132,7 @@ public class BoardDAO {
 		}
 		return null;
 	}
-	//member Å×ÀÌºí¿¡¼­ ÀÎÁõµÈ idÀÇ »ç¿ëÀÚ¸í °¡Á®¿À±â
+	//member ï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ idï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	public String getLoginNameById(String id) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -137,7 +152,7 @@ public class BoardDAO {
 			
 			return name;
 		} catch (Exception ex) {
-			System.out.println("getBoardByNum() ¿¡·¯ : " + ex);
+			System.out.println("getBoardByNum() ï¿½ï¿½ï¿½ï¿½ : " + ex);
 		} finally {
 			try {				
 				if (rs != null) 
@@ -153,7 +168,7 @@ public class BoardDAO {
 		return null;
 	}
 
-	//board Å×ÀÌºí¿¡ »õ·Î¿î ±Û »ğÀÔÈ÷°¡
+	//board ï¿½ï¿½ï¿½Ìºï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	public void insertBoard(BoardDTO board)  {
 
 		
@@ -177,7 +192,7 @@ public class BoardDAO {
 
 			pstmt.executeUpdate();
 		} catch (Exception ex) {
-			System.out.println("insertBoard() ¿¡·¯ : " + ex);
+			System.out.println("insertBoard() ï¿½ï¿½ï¿½ï¿½ : " + ex);
 		} finally {
 			try {									
 				if (pstmt != null) 
@@ -189,7 +204,7 @@ public class BoardDAO {
 			}		
 		}		
 	} 
-	//¼±ÅÃµÈ ±ÛÀÇ Á¶È¸¼ö Áõ°¡ÇÏ±â
+	//ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
 	public void updateHit(int num) {
 
 		Connection conn = null;
@@ -215,7 +230,7 @@ public class BoardDAO {
 			pstmt.setInt(2, num);
 			pstmt.executeUpdate();
 		} catch (Exception ex) {
-			System.out.println("updateHit() ¿¡·¯ : " + ex);
+			System.out.println("updateHit() ï¿½ï¿½ï¿½ï¿½ : " + ex);
 		} finally {
 			try {
 				if (rs != null) 
@@ -229,7 +244,7 @@ public class BoardDAO {
 			}			
 		}
 	}
-	//¼±ÅÃµÈ ±Û »ó¼¼ ³»¿ë °¡Á®¿À±â
+	//ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	public BoardDTO getBoardByNum(int num, int page) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -259,7 +274,7 @@ public class BoardDAO {
 			
 			return board;
 		} catch (Exception ex) {
-			System.out.println("getBoardByNum() ¿¡·¯ : " + ex);
+			System.out.println("getBoardByNum() ï¿½ï¿½ï¿½ï¿½ : " + ex);
 		} finally {
 			try {
 				if (rs != null) 
@@ -274,7 +289,7 @@ public class BoardDAO {
 		}
 		return null;
 	}
-	//¼±ÅÃµÈ ±Û ³»¿ë ¼öÁ¤ÇÏ±â
+	//ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
 	public void updateBoard(BoardDTO board) {
 
 		Connection conn = null;
@@ -297,7 +312,7 @@ public class BoardDAO {
 			conn.commit();
 
 		} catch (Exception ex) {
-			System.out.println("updateBoard() ¿¡·¯ : " + ex);
+			System.out.println("updateBoard() ï¿½ï¿½ï¿½ï¿½ : " + ex);
 		} finally {
 			try {										
 				if (pstmt != null) 
@@ -309,7 +324,7 @@ public class BoardDAO {
 			}		
 		}
 	} 
-	//¼±ÅÃµÈ ±Û »èÁ¦ÇÏ±â
+	//ï¿½ï¿½ï¿½Ãµï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
 	public void deleteBoard(int num) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;		
@@ -323,7 +338,7 @@ public class BoardDAO {
 			pstmt.executeUpdate();
 
 		} catch (Exception ex) {
-			System.out.println("deleteBoard() ¿¡·¯ : " + ex);
+			System.out.println("deleteBoard() ï¿½ï¿½ï¿½ï¿½ : " + ex);
 		} finally {
 			try {										
 				if (pstmt != null) 

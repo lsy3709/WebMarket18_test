@@ -19,6 +19,7 @@
 	String phone = request.getParameter("phone");
 	String address = request.getParameter("address");
 
+	// 회원 가입시 입력될 날짜 형식.
 	Date currentDatetime = new Date(System.currentTimeMillis());
 	java.sql.Date sqlDate = new java.sql.Date(currentDatetime.getTime());
 	java.sql.Timestamp timestamp = new java.sql.Timestamp(currentDatetime.getTime());
