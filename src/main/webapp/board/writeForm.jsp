@@ -36,7 +36,9 @@
 	<div class="container">
 
 		<form name="newWrite" action="./BoardWriteAction.do"
-			class="form-horizontal" method="post" onsubmit="return checkForm()">
+			class="form-horizontal" method="post" onsubmit="return checkForm()"
+			enctype="multipart/form-data">
+			
 			<input name="id" type="hidden" class="form-control"
 				value="${sessionId}">
 			<div class="form-group row">
@@ -61,6 +63,11 @@
 						placeholder="content"></textarea>
 				</div>
 			</div>
+		
+			
+			파일1 : <input type="file" name="upload1" />
+			파일2 : <input type="file" name="upload2" />
+
 			<div class="form-group row">
 				<div class="col-sm-offset-2 col-sm-10 ">
 				 <input type="submit" class="btn btn-primary " value="등록 ">				
