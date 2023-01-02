@@ -15,6 +15,7 @@ import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import mvc.model.BoardDAO;
 import mvc.model.BoardDTO;
+import mvc.model.FileImageDTO;
 
 public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -182,7 +183,10 @@ public class BoardController extends HttpServlet {
 			// 사용자가 작성한 글의 내용을 담을 임시 객체.
 			// 임시 객체는 해당 db에 전달할 형식(DTO)
 			BoardDTO board = new BoardDTO();
+			FileImageDTO fileDTO = new FileImageDTO();
 			
+			//num을 받아오는 작업이 없습니다. 
+			// 
 			// 사용자로부터 입력 받은 내용을 임시 객체에 담아두는 작업. 
 			board.setId(multi.getParameter("id"));
 			board.setName(multi.getParameter("name"));
@@ -206,11 +210,19 @@ public class BoardController extends HttpServlet {
 			board.setIp(request.getRemoteAddr());	
 								
 			// 임시 객체 board(DTO) 사용자가 글쓰기시 입력한 정보와 보이지 않는 정보를 같이 전달함.
+			// 임시 객체 board(DTO) 내용에는 num 의 정보가 없고, 기본 자동 생성 번호를 사용.
 			// 글만 작성.
 			dao.insertBoard(board);
 			// 해당 이미지를 저장하는 메서드를 만들기.
 			// 매개변수에는 해당 게시글의 번호를 넣을 예정. 
-			dao.insertImage(num)
+			// 하나의 게시글에 첨부된 이미지들의 목록도 있음. 
+			
+			//board 에서 이미지를 넣는 경우.
+			//1) 한개 2) 두개 이상이 들어갈수도 있음.
+			// 3) 파일 이미지가 없는 경우.
+			if(board.getFileList() != null) {
+			dao.insertImage(board,fileDTO);
+			}
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
