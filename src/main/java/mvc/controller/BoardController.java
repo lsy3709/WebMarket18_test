@@ -176,6 +176,7 @@ public class BoardController extends HttpServlet {
 																												// 절대 경로
 		String encType = "utf-8"; // 인코딩 타입
 		int maxSize = 10 * 1024 * 1024; // 최대 업로드될 파일의 크기5Mb
+		int boardNum;
 
 		MultipartRequest multi;
 
@@ -187,6 +188,16 @@ public class BoardController extends HttpServlet {
 			// dao 게시판에 관련된 crud 메서드들이 있다.
 			// 싱글톤 패턴.
 			BoardDAO dao = BoardDAO.getInstance();
+			int test = dao.getListCount(null, null);
+			System.out.println("test :"+ test);
+			
+			//게시판 첫 시작시, 임의의 이미지 없는 글 올리기 , 축하글 또는 공지사항등 등록.
+			if(dao.getListCount(null, null) != 0 ) {
+				boardNum = dao.getListCount(null, null);
+			} else {
+				boardNum = 1;
+			}
+//			System.out.println("boardNum :"+ boardNum);
 
 			// 사용자가 작성한 글의 내용을 담을 임시 객체.
 			// 임시 객체는 해당 db에 전달할 형식(DTO)
@@ -248,8 +259,10 @@ public class BoardController extends HttpServlet {
 				// 변경된 파일명 : 아래 형식으로 파일명 중복을 방지.
 				// 171f45c0-38fa-42fd-bd4c-63cb8c4847a1_라바1.jfif
 				String uploadFileName = uuid.toString() + "_" + fileName;
-				
+				int boardNum2 = boardNum + 1;
 				fileDTO2.setFileName(uploadFileName);
+				fileDTO2.setRegist_day(regist_day);
+				fileDTO2.setNum(boardNum2);
 				fileLists.add(fileDTO2);
 				// 업로드된 파일명을 변경하는 작업.
 				// MultipartRequest 를 사용할 경우 파일 이름을 변경 하여 업로드 할 수 없다.
@@ -259,24 +272,28 @@ public class BoardController extends HttpServlet {
 				if(!fileName.equals("")) {
 				     // 원본이 업로드된 절대경로와 파일명를 구한다.
 				 String fullFileName = realFolder + "/" + fileName;
-				     java.io.File f1 = new java.io.File(fullFileName);
+				 // 파일 객체 생성
+				     File f1 = new File(fullFileName);
 				     if(f1.exists()) {     // 업로드된 파일명이 존재하면 Rename한다.
-				          java.io.File newFile = new java.io.File(realFolder + "/" + uploadFileName);
+				    	 //변경하고 싶은 파일명, 해당 경로와 해당 파일 그리고 확장자 포함. 
+				          File newFile = new File(realFolder + "/" + uploadFileName);
+				          // 파일이름 변경.
 				          f1.renameTo(newFile);   // rename...
 				     }
 				}
-				System.out.println("uploadFileName : 반복문안에 파일명" + uploadFileName);
-				System.out.println("해당 파일 위치 경로가 찍히는지 여부 : " + realFolder);
+//				System.out.println("uploadFileName : 반복문안에 파일명" + uploadFileName);
+//				System.out.println("해당 파일 위치 경로가 찍히는지 여부 : " + realFolder);
 			}
-			for (int i = 0; i < fileLists.size(); i++) {
-				FileImageDTO ex = fileLists.get(i);
-				String ex2 = ex.getFileName();
-				System.out.println("ex2 밖에 반복문 테스트" + ex2);
-			}
-
-//			if(board.getFileList() != null) {
-//			dao.insertImage(board,fileDTO);
+//			for (int i = 0; i < fileLists.size(); i++) {
+//				FileImageDTO ex = fileLists.get(i);
+//				String ex2 = ex.getFileName();
+//				System.out.println("ex2 밖에 반복문 테스트" + ex2);
 //			}
+
+			//파일이미지가 존재한다면, 해당 파일들을 디비 테이블에 추가함.
+			if(fileLists != null) {
+			dao.insertImage(fileLists);
+			}
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

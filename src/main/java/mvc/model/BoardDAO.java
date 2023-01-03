@@ -211,15 +211,17 @@ public class BoardDAO {
 	} 
 	
 	//이미지를 등록하는 메서드. 
-	public void insertImage(BoardDTO board, FileImageDTO fileDTO)  {
+	public void insertImage(ArrayList<FileImageDTO> fileLists)  {
 
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		try {
 			conn = DBConnection.getConnection();		
-			ArrayList<FileImageDTO> fileList = new ArrayList<FileImageDTO>();
-			fileList = board.getFileList();
-			for(int i=0; i<fileList.size(); i++) {
+//			ArrayList<FileImageDTO> fileList = new ArrayList<FileImageDTO>();
+//			fileList = board.getFileList();
+			for(int i=0; i<fileLists.size(); i++) {
+				FileImageDTO fileImageDTO = fileLists.get(i);
+//				String fileName = fileImageDTO.getFileName();
 				String sql = "insert into board_images values(?, ?, ?, ?)";
 				
 				//동적 쿼리에 쿼리 담기.
@@ -230,13 +232,13 @@ public class BoardDAO {
 				// 해당 멀티 이미지를 반복문으로 여러개를 입력 하는 로직 필요.
 				
 				//getFnum() 자동으로 숫자 증가.
-				pstmt.setInt(1, fileDTO.getFnum());
+				pstmt.setInt(1, fileImageDTO.getFnum());
 				// 반복문으로 해당 목록에 들어가 있는 파일이름을 하나씩 가져올 계획. 
-				pstmt.setString(2, fileList.get(i).getFileName());
+				pstmt.setString(2, fileImageDTO.getFileName());
 				// 등록하는 날짜 형식은 시스템 날짜및 시간을 사용할 예정. 
-				pstmt.setString(3, fileDTO.getRegist_day());
+				pstmt.setString(3, fileImageDTO.getRegist_day());
 				// 부모 게시글을 입력할 예정. 
-				pstmt.setInt(4, board.getNum());
+				pstmt.setInt(4, fileImageDTO.getNum());
 
 				// 해당 담은 동적 쿼리 객체를 실행하는 메서드. 
 				// executeUpdate() 호출해서 디비에 저장. 
@@ -244,7 +246,7 @@ public class BoardDAO {
 			}
 			
 		} catch (Exception ex) {
-			System.out.println("insertBoard() ���� : " + ex);
+			System.out.println("insertImage()  : " + ex);
 		} finally {
 			try {
 				// 역순으로 디비에 연결할 때 사용 했던 객체를 반납함. 
