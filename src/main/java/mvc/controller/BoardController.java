@@ -24,6 +24,7 @@ public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	// 해다 게시판의 페이징 처리하기위한 상수값, -> 목록에 보여주는 갯수.
 	static final int LISTCOUNT = 5;
+	static int boardNum = 0;
 
 	// get 로 전송되어도, post 방식으로 다 처리하는 로직으로 예제 구성이 되어있음.
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -148,6 +149,7 @@ public class BoardController extends HttpServlet {
 		request.setAttribute("total_page", total_page);
 		request.setAttribute("total_record", total_record);
 		request.setAttribute("boardlist", boardlist);
+		request.setAttribute("boardNum", boardNum);
 	}
 
 	// 해당 로그인 아이디로
@@ -168,7 +170,7 @@ public class BoardController extends HttpServlet {
 	// 추가로 이미지를 등록하는 메서드를 따로 분리해서 작업후 , 여기안에 해당 메서드를 호출 할 계획.
 	public void requestBoardWrite(HttpServletRequest request) {
 
-		String filename2 = "";
+		
 //		String realFolder = "C:\\upload"; //웹 어플리케이션상의 절대 경로
 		// 해당 프로젝트의 특정 폴더의 위치를 절대경로로 알려줘서 상품 등록시 이미지의 저장경로.
 		String realFolder = "C:\\JSP_Workspace1\\ch18_WebMarket_2\\src\\main\\webapp\\resources\\board_images"; // 웹
@@ -176,7 +178,6 @@ public class BoardController extends HttpServlet {
 																												// 절대 경로
 		String encType = "utf-8"; // 인코딩 타입
 		int maxSize = 10 * 1024 * 1024; // 최대 업로드될 파일의 크기5Mb
-		int boardNum;
 
 		MultipartRequest multi;
 
@@ -189,13 +190,14 @@ public class BoardController extends HttpServlet {
 			// 싱글톤 패턴.
 			BoardDAO dao = BoardDAO.getInstance();
 			int test = dao.getListCount(null, null);
-			System.out.println("test :"+ test);
+			System.out.println("test 값확인 :"+ test);
 			
 			//게시판 첫 시작시, 임의의 이미지 없는 글 올리기 , 축하글 또는 공지사항등 등록.
-			if(dao.getListCount(null, null) != 0 ) {
-				boardNum = dao.getListCount(null, null);
-			} else {
+			if(test == 0 ) {
 				boardNum = 1;
+				
+			} else {
+				boardNum += 1;
 			}
 //			System.out.println("boardNum :"+ boardNum);
 
@@ -232,7 +234,9 @@ public class BoardController extends HttpServlet {
 			// 임시 객체 board(DTO) 사용자가 글쓰기시 입력한 정보와 보이지 않는 정보를 같이 전달함.
 			// 임시 객체 board(DTO) 내용에는 num 의 정보가 없고, 기본 자동 생성 번호를 사용.
 			// 글만 작성.
+			
 			dao.insertBoard(board);
+			
 			// 해당 이미지를 저장하는 메서드를 만들기.
 			// 매개변수에는 해당 게시글의 번호를 넣을 예정.
 			// 하나의 게시글에 첨부된 이미지들의 목록도 있음.
@@ -259,10 +263,9 @@ public class BoardController extends HttpServlet {
 				// 변경된 파일명 : 아래 형식으로 파일명 중복을 방지.
 				// 171f45c0-38fa-42fd-bd4c-63cb8c4847a1_라바1.jfif
 				String uploadFileName = uuid.toString() + "_" + fileName;
-				int boardNum2 = boardNum + 1;
 				fileDTO2.setFileName(uploadFileName);
 				fileDTO2.setRegist_day(regist_day);
-				fileDTO2.setNum(boardNum2);
+				fileDTO2.setNum(boardNum);
 				fileLists.add(fileDTO2);
 				// 업로드된 파일명을 변경하는 작업.
 				// MultipartRequest 를 사용할 경우 파일 이름을 변경 하여 업로드 할 수 없다.
@@ -281,8 +284,8 @@ public class BoardController extends HttpServlet {
 				          f1.renameTo(newFile);   // rename...
 				     }
 				}
-//				System.out.println("uploadFileName : 반복문안에 파일명" + uploadFileName);
-//				System.out.println("해당 파일 위치 경로가 찍히는지 여부 : " + realFolder);
+				System.out.println("uploadFileName : 반복문안에 파일명" + uploadFileName);
+				System.out.println("해당 파일 위치 경로가 찍히는지 여부 : " + realFolder);
 			}
 //			for (int i = 0; i < fileLists.size(); i++) {
 //				FileImageDTO ex = fileLists.get(i);
@@ -293,6 +296,8 @@ public class BoardController extends HttpServlet {
 			//파일이미지가 존재한다면, 해당 파일들을 디비 테이블에 추가함.
 			if(fileLists != null) {
 			dao.insertImage(fileLists);
+//			boardNum++;
+			System.out.println("boardNum:" + boardNum);
 			}
 
 		} catch (IOException e) {
@@ -315,16 +320,31 @@ public class BoardController extends HttpServlet {
 
 		// 임시로 해당 게시글을 담은 객체(DTO)
 		BoardDTO board = new BoardDTO();
+		
+		// 이미지 처리할 임시 객체들.
+		ArrayList<FileImageDTO> fileLists = new ArrayList<FileImageDTO>();
 
 		// dao 에서 해당 글번호의 내용을 가져오는 메서드.
 		// 이 메서드 안에 조회수를 증가하는 메서드가 포함되어 있다.
 		board = dao.getBoardByNum(num, pageNum);
+		System.out.println("getBoardByNum 메서드 출력후" + board);
+		System.out.println("num : " + num);
+		fileLists = dao.getBoardImageByNum(num);
+		System.out.println("getBoardImageByNum 메서드 출력후" + fileLists);
+		
+		//콘솔확인.
+		for (int i = 0; i < fileLists.size(); i++) {
+			FileImageDTO ex = fileLists.get(i);
+			String ex2 = ex.getFileName();
+			System.out.println("ex2 밖에 반복문 테스트" + ex2);
+		}
 
 		// 내장객체에 , 선택된 하나의 게시글의 번호인 num
 		// board : 하나의 선택된 게시글의 객체.
 		request.setAttribute("num", num);
 		request.setAttribute("page", pageNum);
 		request.setAttribute("board", board);
+		request.setAttribute("fileLists", fileLists);
 	}
 
 	// 게시판 수정하기.

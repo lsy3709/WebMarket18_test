@@ -14,6 +14,7 @@
 	int pageNum = ((Integer) request.getAttribute("pageNum")).intValue();
 	int total_page = ((Integer) request.getAttribute("total_page")).intValue();
 	int listCount = ((Integer) request.getAttribute("listCount")).intValue();
+	int boardNum = ((Integer) request.getAttribute("boardNum")).intValue();
 %>
 <html>
 <head>
@@ -42,6 +43,7 @@
 			<h3>total_record의 값 :<%=total_record%> </h3>
 			<h3>pageNum의 값 :<%=pageNum%> </h3>
 			<h3>total_page의 값 :<%=total_page%> </h3>
+			<h3>boardNum의 값 :<%=boardNum%> </h3>
 		</div>
 	</div>
 	<div class="container">

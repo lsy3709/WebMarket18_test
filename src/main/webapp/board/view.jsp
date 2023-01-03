@@ -2,9 +2,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <%@ page import="mvc.model.BoardDTO"%>
+<%@ page import="mvc.model.FileImageDTO"%>
+<%@ page import="java.util.ArrayList"%>
 
 <%
 	BoardDTO notice = (BoardDTO) request.getAttribute("board");
+	ArrayList<FileImageDTO> fileLists = (ArrayList<FileImageDTO>) request.getAttribute("fileLists");
 	int num = ((Integer) request.getAttribute("num")).intValue();
 	int nowpage = ((Integer) request.getAttribute("page")).intValue();
 %>
@@ -43,6 +46,22 @@
 					<textarea name="content" class="form-control" cols="50" rows="5"> <%=notice.getContent()%></textarea>
 				</div>
 			</div>
+			
+			<% for (int i = 0; i < fileLists.size(); i++) {
+				FileImageDTO fileImageDTO = new FileImageDTO();
+				fileImageDTO = fileLists.get(i);
+				String image = fileImageDTO.getFileName();
+				
+				%>
+				<div class="col-md-4">
+				<img src="C:/JSP_Workspace1/ch18_WebMarket_2/src/main/webapp/resources/board_images/<%= image %>" style="width: 70%">
+				<%-- <img src="../resources/board_images/<%= image %>" style="width: 70%"> --%>
+				<%-- <img src="./resources/images/<%=rs.getString("p_fileName")%>" style="width: 100%"> --%>
+				<%= image %>
+				</div>
+				<%
+				}
+				 %>
 			<div class="form-group row">
 				<div class="col-sm-offset-2 col-sm-10 ">
 					<c:set var="userId" value="<%=notice.getId()%>" />

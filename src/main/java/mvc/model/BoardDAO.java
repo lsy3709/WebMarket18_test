@@ -195,6 +195,8 @@ public class BoardDAO {
 			// 해당 담은 동적 쿼리 객체를 실행하는 메서드. 
 			// executeUpdate() 호출해서 디비에 저장. 
 			pstmt.executeUpdate();
+			conn.commit();
+			conn.setAutoCommit(true);
 		} catch (Exception ex) {
 			System.out.println("insertBoard() ���� : " + ex);
 		} finally {
@@ -307,6 +309,61 @@ public class BoardDAO {
 			}			
 		}
 	}
+	
+	
+	
+// 상세글에서 해당 이미지 불러오는 메서드.	
+public ArrayList<FileImageDTO> getBoardImageByNum(int num) {
+		
+		// 디비 연결를 위한 세트.
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		ArrayList<FileImageDTO> fileLists = new ArrayList<FileImageDTO>();				
+		// 해당 게시글 번호로 다시 디비에서 조회하는 작업. 
+		String sql = "select * from board_images where num = ? ";
+
+		try {
+			// 임시 담을 객체. 게시글 번호로 인한 하나의 게시글을 담을 임시 객체.
+			
+		
+			conn = DBConnection.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, num);
+			
+			// 선택된 게시글 번호로 조회된 이미지 여러개를 가져와서. 
+			// 임시 객체에 역할로 담는 작업. 
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				FileImageDTO fileDTO = new FileImageDTO();
+				fileDTO.setFnum(rs.getInt("Fnum"));
+				fileDTO.setFileName(rs.getString("fileName"));
+				fileDTO.setRegist_day(rs.getString("regist_day"));
+				fileDTO.setNum(rs.getInt("num"));
+				
+				fileLists.add(fileDTO);
+			}
+			System.out.println("fileLists의 갯수 : " + fileLists.size());
+			return fileLists;
+		} catch (Exception ex) {
+			System.out.println("getBoardByNum() 예외 : " + ex);
+		} finally {
+			try {
+				if (rs != null) 
+					rs.close();							
+				if (pstmt != null) 
+					pstmt.close();				
+				if (conn != null) 
+					conn.close();
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}		
+		}
+		return null;
+	}
+	
 	//글 목록에서 , 해당 게시글 하나 클릭시 상세 글보기.
 	// 해당 게시글 번호로 해당 글 하나를 가져오는 역할. 
 	public BoardDTO getBoardByNum(int num, int page) {
