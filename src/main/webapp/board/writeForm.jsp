@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=utf-8"%>
+<%@ page contentType="text/html; charset=utf-8" isELIgnored="false"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 	String name = (String) request.getAttribute("name");
@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="./resources/css/bootstrap.min.css" />
 <title>Board</title>
 </head>
+<script  src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">
 	function checkForm() {
 		if (!document.newWrite.name.value) {
@@ -24,6 +25,14 @@
 			return false;
 		}		
 	}
+	
+	/* 파일첨부 추가하는 함수 */
+	 var cnt=1;
+	  function addFile(){
+		  $("#d_file").append("<br>"+"<input type='file' name='file"+cnt+"' />");
+		  cnt++;
+	  }  
+	
 </script>
 <body>
 	<jsp:include page="../menu.jsp" />
@@ -64,9 +73,13 @@
 				</div>
 			</div>
 		
+			<!-- 자바스크립트 함수를 이용해 버튼 클릭 시, 아래에 HTML append 기능으로 뷰에 추가하는 방법. -->
+			이미지 파일 추가: <input type="button" value="파일 추가" onClick="addFile()"/>
+			<!-- 아래부분에 해당 파일 선택하는 부분이 한줄씩 추가. -->
+			<div id="d_file"></div>
 			
-			파일1 : <input type="file" name="upload1" />
-			파일2 : <input type="file" name="upload2" />
+			<!-- 파일 선택 화면에서 이미지를 여러개 선택하는 방법. -->
+			<!-- 이미지 파일 추가: <input type="file"  id="uploads" name="uploads" multiple> -->
 
 			<div class="form-group row">
 				<div class="col-sm-offset-2 col-sm-10 ">
