@@ -1,13 +1,18 @@
 <%@ page contentType="text/html; charset=utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+
+<!-- 작업에 필요한 패키지들을 추가했음. -->
 <%@ page import="mvc.model.BoardDTO"%>
 <%@ page import="mvc.model.FileImageDTO"%>
 <%@ page import="java.util.ArrayList"%>
 
 <%
 	BoardDTO notice = (BoardDTO) request.getAttribute("board");
+// 해당 뷰에 작업 하기 위해서, 컨트롤러에서 설정한 파일 이미지들 전체를 담는 컬렉션을 가져오는 역할. 
 	ArrayList<FileImageDTO> fileLists = (ArrayList<FileImageDTO>) request.getAttribute("fileLists");
+
+// 기존 일반글 작성시 필요한 해당 게시글 번호 및 페이지 번호를 작업.
 	int num = ((Integer) request.getAttribute("num")).intValue();
 	int nowpage = ((Integer) request.getAttribute("page")).intValue();
 %>
@@ -46,7 +51,7 @@
 					<textarea name="content" class="form-control" cols="50" rows="5"> <%=notice.getContent()%></textarea>
 				</div>
 			</div>
-			
+			 <!-- 반복문으로 컬렉션에 있는 파일 이미지 객체를 하나씩 꺼내서 가져오는 작업. -->
 			<% for (int i = 0; i < fileLists.size(); i++) {
 				FileImageDTO fileImageDTO = new FileImageDTO();
 				fileImageDTO = fileLists.get(i);
@@ -54,8 +59,8 @@
 				
 				%>
 				<div class="col-md-4">
-				<img src="C:/JSP_Workspace1/ch18_WebMarket_2/src/main/webapp/resources/board_images/<%= image %>" style="width: 70%">
-				<%-- <img src="../resources/board_images/<%= image %>" style="width: 70%"> --%>
+				<%-- <img src="C:/JSP_Workspace1/ch18_WebMarket_2/src/main/webapp/resources/board_images/<%= image %>" style="width: 70%"> --%>
+				<img src="../resources/board_images/<%= image %>" style="width: 70%">
 				<%-- <img src="./resources/images/<%=rs.getString("p_fileName")%>" style="width: 100%"> --%>
 				<%= image %>
 				</div>

@@ -19,6 +19,7 @@ select * from board;
 select  count(*) from board;
 select * from board ORDER BY num DESC;
 select * from board where num = 5;
+
 drop table board_images;
 drop table board;
 commit;

@@ -212,7 +212,7 @@ public class BoardDAO {
 		}		
 	} 
 	
-	//이미지를 등록하는 메서드. 
+	//이미지를 등록하는 메서드. 매개변수: 파일 이미지들 객체를 담은 컬렉션이 필요함. 
 	public void insertImage(ArrayList<FileImageDTO> fileLists)  {
 
 		Connection conn = null;
